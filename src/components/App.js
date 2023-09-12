@@ -1,46 +1,70 @@
 import { Component } from "react";
-import { SearchBar } from "./Searchbar/Searchbar";
+import SearchBar from "./Searchbar/Searchbar";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { fetchImages } from "api";
 import { AppStyled } from "./App.styled";
 import { Loader } from "./Loader/Loader";
 
 
+
 export class App extends Component { 
     state = {
-        query: "",
+        value: '',
         images: [],
         page: 1,
+        loader: false,
+        showBtn: false,
+        showModal: false,
     };
 
-    handlerSubmit = evt => {
-        evt.preventDefault();
+    handlerSubmit = value => {
+        this.setState({ value, page: 1, images: [] });
+    };
 
-        this.setState({
-            query: evt.target.elements.query.value,
-            images: [],
-            page: 1,
-        })
-    }
+    handlerClick = () => {
+        this.setState(prevState => ({ page: prevState + 1 }));
+    };
 
-    handlerLoadMore = () => {
-        this.setState(prevState => ({
-            page: prevState.page + 1
-        }));
-    }
+    // handlerSubmit = evt => {
+    //     evt.preventDefault();
 
-    async componentDidMount(prevPops, prevState) {
+    //     this.setState({
+    //         query: evt.target.elements.query.value,
+    //         images: [],
+    //         page: 1,
+    //     })
+    // }
 
-        //if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
-            // http request
-        //}
-        
-        try {
-            const imagesItem = await fetchImages(this.state.query, this.state.page);
-            this.setState({images: imagesItem.hits})
-            //console.log(imagesItem.hits)
+    // handlerLoadMore = () => {
+    //     this.setState(prevState => ({
+    //         page: prevState.page + 1
+    //     }));
+    // }
+
+    async componentDidUpdate(prevPops, prevState) {
+
+        if (prevState.value !== this.state.value || prevState.page !== this.state.page) {
+            this.setState({ loader: true });
+
+            try {
+                const images = await fetchImages(this.state.value, this.state.page);
+                this.setState(prevState => {
+                    return {
+                        images: [...prevState.images, ...images.hits],
+                        showBtn: this.state.page < Math.ceil(images.totalHits / 20)
+                    };
+                });
+                //console.log(imagesItem.hits)
+            }
+            catch (error) {
+                console.log(error);
+            }
+            finally {
+                this.setState({loader: false})
+            }
+
         }
-        catch(error){}
+        
     }
     
     render() {
