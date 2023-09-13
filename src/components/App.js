@@ -4,6 +4,7 @@ import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { fetchImages } from "api";
 import { AppStyled } from "./App.styled";
 import { Loader } from "./Loader/Loader";
+import Modal from "./Modal/Modal";
 
 
 
@@ -15,6 +16,7 @@ export class App extends Component {
         loader: false,
         showBtn: false,
         showModal: false,
+        largeImage: '',
     };
 
     handlerSubmit = value => {
@@ -24,6 +26,17 @@ export class App extends Component {
     handlerClick = () => {
         this.setState(prevState => ({ page: prevState + 1 }));
     };
+
+    openModal = index => {
+        this.setState(({ images }) => ({
+            showModal: true,
+            largeImage: images[index].largeImageURL,
+        }))
+    };
+
+    toggleModal = () => {
+        this.setState(({ showModal }) => ({ showModal: !showModal }));
+    }
 
     // handlerSubmit = evt => {
     //     evt.preventDefault();
@@ -71,8 +84,9 @@ export class App extends Component {
         return (
             <AppStyled>
                 <SearchBar onSubmit={this.handlerSubmit} />
-                {this.state.images.length > 0 && <ImageGallery items={this.state.images} />}
-                <Loader/>
+                {this.state.images.length > 0 && <ImageGallery items={this.state.images} openModal={this.openModal} />}
+                {this.state.showModal && <Modal toggleModal={this.toggleModal} largeImage={this.state.largeImage} />}
+                {this.state.loader && <Loader/>}
             </AppStyled>
         )
     }
