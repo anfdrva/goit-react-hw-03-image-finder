@@ -5,6 +5,7 @@ import { fetchImages } from "api";
 import { AppStyled } from "./App.styled";
 import { Loader } from "./Loader/Loader";
 import Modal from "./Modal/Modal";
+import { Button } from "./Button/Button";
 
 
 
@@ -14,7 +15,7 @@ export class App extends Component {
         images: [],
         page: 1,
         loader: false,
-        showBtn: false,
+        //showBtn: false,
         showModal: false,
         largeImage: '',
     };
@@ -38,21 +39,9 @@ export class App extends Component {
         this.setState(({ showModal }) => ({ showModal: !showModal }));
     }
 
-    // handlerSubmit = evt => {
-    //     evt.preventDefault();
-
-    //     this.setState({
-    //         query: evt.target.elements.query.value,
-    //         images: [],
-    //         page: 1,
-    //     })
-    // }
-
-    // handlerLoadMore = () => {
-    //     this.setState(prevState => ({
-    //         page: prevState.page + 1
-    //     }));
-    // }
+    nextPage = () => {
+        this.setState(({page}) =>({page: page + 1}))
+    }
 
     async componentDidUpdate(prevPops, prevState) {
 
@@ -79,14 +68,17 @@ export class App extends Component {
         }
         
     }
+
+
     
     render() {
         return (
             <AppStyled>
                 <SearchBar onSubmit={this.handlerSubmit} />
-                {this.state.images.length > 0 && <ImageGallery items={this.state.images} openModal={this.openModal} />}
-                {this.state.showModal && <Modal toggleModal={this.toggleModal} largeImage={this.state.largeImage} />}
-                {this.state.loader && <Loader/>}
+                {this.state.images.length > 0 && (<ImageGallery items={this.state.images} openModal={this.openModal} />)}
+                {this.state.showModal && (<Modal toggleModal={this.toggleModal} largeImage={this.state.largeImage} />)}
+                {this.state.loader && <Loader />}
+                {this.state.images.length >= 12 && <Button nextPage={this.nextPage} />}
             </AppStyled>
         )
     }

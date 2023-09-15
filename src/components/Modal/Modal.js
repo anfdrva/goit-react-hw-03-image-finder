@@ -17,6 +17,7 @@ export default class Modal extends Component{
 
     handlerBackdropClick = evt => {
         evt.target === evt.currentTarget && this.props.toggleModal();
+        //this.props.toggleModal();
     }
 
     render() {
