@@ -17,13 +17,12 @@ export default class Modal extends Component{
 
     handlerBackdropClick = evt => {
         evt.target === evt.currentTarget && this.props.toggleModal();
-        //this.props.toggleModal();
     }
 
     render() {
         return (
-            <Overlay>
-                <ModalContainer onClick={this.handlerBackdropClick}>
+            <Overlay onClick={this.handlerBackdropClick}>
+                <ModalContainer >
                     <img src={this.props.largeImage} alt=""/>
                 </ModalContainer>
             </Overlay>
