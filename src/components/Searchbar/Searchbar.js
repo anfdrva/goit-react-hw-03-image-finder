@@ -5,6 +5,7 @@ import { SearchBarStyled, SearchForm, SearchFormButton, SearchFormButtonLabel, S
 class SearchBar extends Component {
     state = {
         input: '',
+        prevInput: '',
     }
 
     handlerChange = ({ target }) => {
@@ -13,7 +14,12 @@ class SearchBar extends Component {
 
     handlerSubmit = evt => {
         evt.preventDefault();
-        this.props.onSubmit(this.state.input);
+        if (this.state.input !== this.state.prevInput) {
+            this.props.onSubmit(this.state.input);
+            this.setState(prevState => ({
+                prevInput: prevState.input,
+            }))
+        }
     };
 
     render() {
@@ -38,21 +44,5 @@ class SearchBar extends Component {
 
 export default SearchBar;
 
-// export const SearchBar = ({ onSubmit }) => {
-    
 
-//     return (
-//        <SearchBarStyled className="searchbar">
-//         <SearchForm className="form" onSubmit={onSubmit}>
-//             <SearchFormButton type="submit" className="button">
-//                 <SearchFormButtonLabel className="button-label">Search</SearchFormButtonLabel>
-//             </SearchFormButton>
-//             <SearchFormInput
-//                 className="input"
-//                 type="text"
-//                 placeholder="Search images and photos"
-//             />
-//         </SearchForm>
-//       </SearchBarStyled>
-//     )
-// }
+
